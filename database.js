@@ -13,7 +13,7 @@ function createPost(e) {
     
     const user = auth.currentUser;
     if (!user) {
-        showToast('Vous devez être connecté pour créer un post', 'error');
+        showToast('You must be logged in to create a post', 'error');
         return;
     }
     
@@ -31,7 +31,7 @@ function createPost(e) {
         });
         
         if (pollOptions.length < 2) {
-            showToast('Un sondage doit avoir au moins 2 options', 'error');
+            showToast('A poll must have at least 2 options', 'error');
             return;
         }
     }
@@ -76,11 +76,11 @@ function createPost(e) {
         
         db.ref().update(updates)
             .then(() => {
-                showToast('Post créé avec succès!', 'success');
+                showToast('Post created successfully!', 'success');
                 closeModal('create-post-modal');
             })
             .catch(error => {
-                showToast('Erreur lors de la création du post: ' + error.message, 'error');
+                showToast('Error when creating the post: ' + error.message, 'error');
             });
     });
 }
@@ -240,7 +240,7 @@ function setupPostInteractions(postElement, postId) {
 function handleReaction(postId, reactionType) {
     const user = auth.currentUser;
     if (!user) {
-        showToast('Vous devez être connecté pour réagir', 'error');
+        showToast('You must be logged in to react', 'error');
         return;
     }
     
@@ -274,7 +274,7 @@ function handleReaction(postId, reactionType) {
 function addComment(postId, commentText) {
     const user = auth.currentUser;
     if (!user) {
-        showToast('Vous devez être connecté pour commenter', 'error');
+        showToast('You must be logged in to comment', 'error');
         return;
     }
     
@@ -296,10 +296,10 @@ function addComment(postId, commentText) {
         
         db.ref().update(updates)
             .then(() => {
-                showToast('Commentaire ajouté!', 'success');
+                showToast('Comment added!', 'success');
             })
             .catch(error => {
-                showToast('Erreur lors de l\'ajout du commentaire: ' + error.message, 'error');
+                showToast('Error when adding the comment: ' + error.message, 'error');
             });
     });
 }
@@ -312,7 +312,7 @@ function loadComments(postId) {
         commentsList.innerHTML = '';
         
         if (!snapshot.exists()) {
-            commentsList.innerHTML = '<p class="no-comments">Aucun commentaire pour le moment.</p>';
+            commentsList.innerHTML = '<p class="no-comments">No comments at the moment.</p>';
             return;
         }
         
@@ -367,7 +367,7 @@ function renderComment(comment, container) {
 function voteInPoll(postId, optionId) {
     const user = auth.currentUser;
     if (!user) {
-        showToast('Vous devez être connecté pour voter', 'error');
+        showToast('You must be logged in to vote', 'error');
         return;
     }
     
@@ -381,7 +381,7 @@ function voteInPoll(postId, optionId) {
         
         if (currentVote === optionId) {
             // L'utilisateur a déjà voté pour cette option
-            showToast('Vous avez déjà voté pour cette option', 'info');
+            showToast('You have already voted for this option', 'info');
         } else {
             // Enregistrer le nouveau vote
             const updates = {};
@@ -401,10 +401,10 @@ function voteInPoll(postId, optionId) {
             
             db.ref().update(updates)
                 .then(() => {
-                    showToast('Vote enregistré!', 'success');
+                    showToast('Vote registered!', 'success');
                 })
                 .catch(error => {
-                    showToast('Erreur lors de l\'enregistrement du vote: ' + error.message, 'error');
+                    showToast('Error when recording the vote: ' + error.message, 'error');
                 });
         }
     });
