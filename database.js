@@ -375,4 +375,37 @@ function voteInPoll(postId, optionId) {
     const optionRef = db.ref(`posts/${postId}/poll/options/${optionId}/votes`);
     const totalVotesRef = db.ref(`posts/${postId}/poll/totalVotes`);
     
-    // Vérifier si
+    // Vérifier si l'utilisateur a déjà voté
+    userVoteRef.once('value').then(snapshot => {
+        const currentVote = snapshot.val();
+        
+        if (currentVote === optionId) {
+            // L'utilisateur a déjà voté pour cette option
+            showToast('Vous avez déjà voté pour cette option', 'info');
+        } else {
+            // Enregistrer le nouveau vote
+            const updates = {};
+            updates[`/poll-votes/${postId}/${user.uid}`] = optionId;
+            
+            if (currentVote) {
+                // L'utilisateur change son vote
+                updates[`/posts/${postId}/poll/options/${currentVote}/votes`] = firebase.database.ServerValue.increment(-1);
+                updates[`/posts/${postId}/poll/totalVotes`] = firebase.database.ServerValue.increment(0); // Pas de changement du total
+            } else {
+                // Nouveau vote
+                updates[`/posts/${postId}/poll/totalVotes`] = firebase.database.ServerValue.increment(1);
+            }
+            
+            // Augmenter le vote pour la nouvelle option
+            updates[`/posts/${postId}/poll/options/${optionId}/votes`] = firebase.database.ServerValue.increment(1);
+            
+            db.ref().update(updates)
+                .then(() => {
+                    showToast('Vote enregistré!', 'success');
+                })
+                .catch(error => {
+                    showToast('Erreur lors de l\'enregistrement du vote: ' + error.message, 'error');
+                });
+        }
+    });
+}
